@@ -1,5 +1,5 @@
 import React from "react";
-import {AutoComplete, Button, Form, Spin} from "antd";
+import {AutoComplete, Button, Form, Spin, Typography} from "antd";
 
 const WeatherAPI = () => {
     const [city, setCity] = React.useState(null);
@@ -38,6 +38,7 @@ const WeatherAPI = () => {
                 throw new Error("Failed to fetch the city");
             }
             const data = await response.json();
+            // remove the duplicate with a Set
             const cities = Array.from(new Set(data.map((item) => item.name + ", " + item.state + ", " + item.country)))
                 .map(label => {
                     //find original data
@@ -75,8 +76,13 @@ const WeatherAPI = () => {
 
     return (
         <div className="App">
-            <Form onFinish={fetchWeather}>
-                <Form.Item label="city" rules={[{required: true}]}>
+            <Form
+                onFinish={fetchWeather}
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                style={{ maxWidth: 600 }}
+            >
+                <Form.Item label="City" rules={[{required: true}]}>
                     <AutoComplete
                         onSearch={handleSearchCity}
                         options={cityList}
@@ -86,12 +92,15 @@ const WeatherAPI = () => {
                         >
                     </AutoComplete>
                 </Form.Item>
-                <Button type="primary"
-                        onClick={fetchWeather}
-                        disabled={loading || !city}
-                >
-                    {loading ? <Spin /> : "Query"}
-                </Button>
+                <Form.Item label={null}>
+                    <Button type="primary"
+                            onClick={fetchWeather}
+                            disabled={loading || !city}
+                    >
+                        {loading ? <Spin /> : "Query"}
+                    </Button>
+                </Form.Item>
+
             </Form>
 
 
@@ -102,9 +111,11 @@ const WeatherAPI = () => {
             )}
             {results && (
                 <div>
-                    {"weather: " + results.weather[0].main}
+                    <Typography.Title level={4} style={{display: 'inline', marginRight: 8}}>Weather: </Typography.Title>
+                    <Typography.Text mark style={{display: 'inline'}}>{results.weather[0].main}</Typography.Text>
                     <br/>
-                    {"temperature: " + (results.main.temp - 273.15).toFixed(2) + "°C"}
+                    <Typography.Title level={4} style={{display: 'inline', marginRight: 8}}>Temperature: </Typography.Title>
+                    <Typography.Text mark style={{display: 'inline'}}>{(results.main.temp - 273.15).toFixed(2) + "°C"}</Typography.Text>
                 </div>
 
             )}
