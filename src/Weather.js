@@ -14,6 +14,11 @@ const WeatherAPI = () => {
     const fetchWeather = async () => {
         setLoading(true);
         setError(null);
+        if (!city.lat || !city.lon) {
+            setError("Please select a city from list.");
+            setLoading(false);
+            return;
+        }
         try {
             const url = urlWeather + "&lat="+city.lat+"&lon="+city.lon;
             const response = await fetch(url);
@@ -107,7 +112,7 @@ const WeatherAPI = () => {
 
             {error && (
                 <div>
-                    {error}
+                    <Typography.Title level={4} type="danger">{error}</Typography.Title>
                 </div>
             )}
             {weather && city && (
