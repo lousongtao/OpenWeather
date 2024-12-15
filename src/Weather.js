@@ -4,13 +4,13 @@ import {AutoComplete, Button, Form, Spin, Typography} from "antd";
 const WeatherAPI = () => {
     const [city, setCity] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
-    const [results, setResults] = React.useState(null);
+    const [weather, setWeather] = React.useState(null);
     const [error, setError] = React.useState(null);
-    const [cityList, setCityList] = React.useState([]); // query cities result if input some letters
+    const [cityList, setCityList] = React.useState([]); // used for selector component
 
-    const api = "85de987be6ca9b72431b807e1822954e";
-    const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=` + api;
-    const urlCity = `https://api.openweathermap.org/geo/1.0/direct?limit=5&appid=` + api+ "&q=";
+    const api = process.env.REACT_APP_OpenWeatherAPI;
+    const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=${api}`;
+    const urlCity = `https://api.openweathermap.org/geo/1.0/direct?limit=5&appid=${api}&q=`;
     const fetchWeather = async () => {
         setLoading(true);
         setError(null);
@@ -21,7 +21,7 @@ const WeatherAPI = () => {
                 throw new Error("Failed to fetch the weather");
             }
             const data = await response.json();
-            setResults(data);
+            setWeather(data);
         } catch (error) {
             setError(error);
         } finally {
@@ -66,6 +66,7 @@ const WeatherAPI = () => {
         if (value){
             fetchCity(value);
         } else {
+            setWeather(null);
             setCityList([]);
         }
     }
@@ -109,13 +110,13 @@ const WeatherAPI = () => {
                     {error}
                 </div>
             )}
-            {results && (
+            {weather && city && (
                 <div>
                     <Typography.Title level={4} style={{display: 'inline', marginRight: 8}}>Weather: </Typography.Title>
-                    <Typography.Text mark style={{display: 'inline'}}>{results.weather[0].main}</Typography.Text>
+                    <Typography.Text mark style={{display: 'inline'}}>{weather.weather[0].main}</Typography.Text>
                     <br/>
                     <Typography.Title level={4} style={{display: 'inline', marginRight: 8}}>Temperature: </Typography.Title>
-                    <Typography.Text mark style={{display: 'inline'}}>{(results.main.temp - 273.15).toFixed(2) + "°C"}</Typography.Text>
+                    <Typography.Text mark style={{display: 'inline'}}>{(weather.main.temp - 273.15).toFixed(2) + "°C"}</Typography.Text>
                 </div>
 
             )}
