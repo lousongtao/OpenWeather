@@ -10,7 +10,7 @@ const WeatherAPI = () => {
 
     const api = "85de987be6ca9b72431b807e1822954e";
     const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=` + api;
-    const urlCity = `http://api.openweathermap.org/geo/1.0/direct?limit=5&appid=` + api+ "&q=";
+    const urlCity = `https://api.openweathermap.org/geo/1.0/direct?limit=5&appid=` + api+ "&q=";
     const fetchWeather = async () => {
         setLoading(true);
         setError(null);
